@@ -4,6 +4,7 @@ import com.alexduzi.desafio03.dto.ClientDTO;
 import com.alexduzi.desafio03.entities.Client;
 import com.alexduzi.desafio03.exceptions.ClientNotFoundException;
 import com.alexduzi.desafio03.exceptions.DatabaseException;
+import com.alexduzi.desafio03.exceptions.PropertyEntityException;
 import com.alexduzi.desafio03.repositories.ClientRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
@@ -11,12 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ClientServices {
+public class ClientService {
 
     @Autowired
     private ClientRepository repository;
@@ -31,7 +33,11 @@ public class ClientServices {
 
     @Transactional(readOnly = true)
     public Page<ClientDTO> findAll(Pageable pageable) {
-        return repository.findAll(pageable).map(this::convertToDto);
+        try {
+            return repository.findAll(pageable).map(this::convertToDto);
+        } catch (PropertyReferenceException e) {
+            throw new PropertyEntityException("Propriedade utilizada na busca não existe no {Cliente}");
+        }
     }
 
     @Transactional
