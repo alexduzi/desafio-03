@@ -1,8 +1,6 @@
 package com.alexduzi.desafio03.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.PastOrPresent;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -17,11 +15,9 @@ public class Client implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Nome não pode ser vazio")
     private String name;
     private String cpf;
     private Double income;
-    @PastOrPresent(message = "Data de nascimento não pode ser maior que a data atual")
     private LocalDate birthDate;
     private Integer children;
 
